@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIIT Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        #timer {
+            font-size: 40px;
+            margin: 20px;
+        }
+        button {
+            font-size: 20px;
+            padding: 10px 20px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>HIIT Timer</h1>
+    <div id="timer">Press Start</div>
+    <button onclick="startTimer()">Start</button>
+    <button onclick="stopTimer()">Stop</button>
+    
+    <audio id="beep" src="https://www.fesliyanstudios.com/play-mp3/4382"></audio>
+    
+    <script>
+        let running = false;
+        let interval;
+        let timeLeft = 40; // Start with 40 sec work
+        let workPhase = true;
+
+        function startTimer() {
+            if (!running) {
+                running = true;
+                timeLeft = 40; // Work starts at 40 sec
+                workPhase = true;
+                updateTimer();
+                interval = setInterval(updateTimer, 1000);
+            }
+        }
+
+        function stopTimer() {
+            running = false;
+            clearInterval(interval);
+            document.getElementById("timer").innerText = "Press Start";
+        }
+
+        function updateTimer() {
+            if (!running) return;
+            document.getElementById("timer").innerText = (workPhase ? "Work: " : "Rest: ") + timeLeft + " sec";
+
+            if (timeLeft === 40 || timeLeft === 20) {
+                playBeep();
+            }
+
+            if (timeLeft === 0) {
+                workPhase = !workPhase;
+                timeLeft = workPhase ? 40 : 20; // 40 sec work, 20 sec rest
+                playBeep();
+            } else {
+                timeLeft--;
+            }
+        }
+
+        function playBeep() {
+            let beep = document.getElementById("beep");
+            beep.currentTime = 0; // Reset sound
+            beep.play().catch(e => console.log("Audio blocked:", e)); // Fix autoplay issues
+        }
+    </script>
+</body>
+</html>
